@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test d'Excellence RDC — Niveau Olympiades — By N.T</title>
+<style>
+  :root{
+    --bg:#070b14;--card:#0e1730;--card2:#0a1122;--text:#e6edf7;--muted:#9fb0c9;
+    --accent:#7c3aed;--accent2:#4f46e5;--ok:#22c55e;--bad:#ef4444;--warn:#f59e0b;
+    --border:#1c2a4d;--gold:#fbbf24;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+    background:radial-gradient(1400px 700px at 50% -10%,#1e1b4b 0%,var(--bg) 65%);
+    color:var(--text);min-height:100vh;display:flex;justify-content:center;
+    align-items:flex-start;padding:24px 16px;
+  }
+  #app{width:100%;max-width:960px}
+  .screen{display:none;animation:fade .35s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card{
+    background:linear-gradient(180deg,var(--card) 0%,var(--card2) 100%);
+    border:1px solid var(--border);border-radius:18px;padding:28px;
+    box-shadow:0 24px 60px rgba(0,0,0,.55);
+  }
+  h1{font-size:2.1rem;margin-bottom:6px;background:linear-gradient(90deg,#a78bfa,#f472b6,#fbbf24);
+     -webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-size:1.4rem;margin-bottom:14px}
+  h3{font-size:1.05rem;margin-bottom:10px;color:var(--gold)}
+  .badge{
+    display:inline-block;background:linear-gradient(90deg,#7c3aed,#ef4444);
+    color:#fff;font-weight:700;padding:4px 12px;border-radius:999px;
+    font-size:.75rem;letter-spacing:1.5px;margin-bottom:14px;
+  }
+  .level-badge{
+    display:inline-block;background:linear-gradient(90deg,#f59e0b,#7c3aed);
+    color:#fff;font-weight:700;padding:4px 12px;border-radius:999px;
+    font-size:.72rem;letter-spacing:1.5px;margin-left:8px;
+  }
+  .subtitle{color:var(--muted);margin-bottom:22px;font-size:1.05rem}
+  .presentation{background:#0a1327;border:1px solid var(--border);border-radius:12px;
+    padding:18px;margin-bottom:18px}
+  .presentation p{color:var(--muted);line-height:1.7;margin-bottom:10px}
+  .presentation ul{list-style:none;padding-left:0;margin-bottom:12px}
+  .presentation li{padding:7px 0;color:var(--text);border-bottom:1px dashed #1c2a4d}
+  .presentation li:last-child{border-bottom:none}
+  .rules-title{font-weight:700;color:var(--gold);margin-top:14px}
+  .goodluck{text-align:center;font-size:1.15rem;margin:22px 0;color:#fde68a}
+  .goodluck strong{color:#fbbf24}
+  .btn{
+    display:inline-block;border:none;border-radius:10px;padding:13px 22px;
+    font-size:1rem;font-weight:600;cursor:pointer;transition:.2s;
+    font-family:inherit;
+  }
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(124,58,237,.45)}
+  .btn.secondary{background:#1c2a4d;color:var(--text);border:1px solid #2a3f66}
+  .btn.secondary:hover{background:#25375a}
+  .btn.danger{background:var(--bad);color:#fff}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+  .text-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px}
+  .timer{
+    font-family:'Courier New',monospace;font-weight:700;font-size:1.15rem;
+    background:#0a1327;border:1px solid var(--border);padding:8px 14px;border-radius:10px;
+    color:#a78bfa;min-width:80px;text-align:center;
+  }
+  .timer.danger{color:var(--bad);border-color:var(--bad);animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .text-content{
+    background:#080e1e;border:1px solid var(--border);border-radius:12px;
+    padding:22px;max-height:60vh;overflow-y:auto;line-height:1.9;color:#cbd5e1;
+    font-size:1.02rem;
+  }
+  .text-content p{margin-bottom:16px;text-align:justify}
+  .text-actions{margin-top:18px;text-align:right}
+
+  .quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+  .section-info{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .section-badge{
+    background:#3b1e6e;color:#d8b4fe;padding:5px 12px;border-radius:999px;
+    font-size:.8rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  }
+  .progress{color:var(--muted);font-size:.9rem}
+  .progress-bar{height:6px;background:#1c2a4d;border-radius:999px;overflow:hidden;margin-bottom:20px}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#f472b6);transition:width .35s}
+  .question{
+    font-size:1.13rem;line-height:1.7;margin-bottom:22px;font-weight:500;
+    padding:16px;background:#0a1327;border-left:4px solid var(--accent);border-radius:8px;
+  }
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+  .option{
+    background:#0a1327;border:1.5px solid var(--border);color:var(--text);
+    padding:14px 18px;border-radius:10px;text-align:left;font-size:1rem;cursor:pointer;
+    transition:.15s;font-family:inherit;line-height:1.55;
+  }
+  .option:hover{background:#122042;border-color:#2a3f66}
+  .option.selected{background:linear-gradient(90deg,#4c1d95,#5b21b6);border-color:var(--accent);color:#fff}
+  .quiz-actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
+    z-index:100;align-items:center;justify-content:center;padding:20px}
+  .modal.open{display:flex}
+  .modal-content{background:var(--card);border:1px solid var(--border);border-radius:16px;
+    width:100%;max-width:820px;max-height:85vh;display:flex;flex-direction:column}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;
+    padding:18px 22px;border-bottom:1px solid var(--border)}
+  .modal-body{padding:22px;overflow-y:auto;line-height:1.9;color:#cbd5e1}
+  .modal-body p{margin-bottom:14px;text-align:justify}
+  .btn-close{background:transparent;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;padding:4px 10px;border-radius:6px}
+  .btn-close:hover{background:#1c2a4d;color:#fff}
+
+  .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:22px}
+  .result-card{background:#0a1327;border:1px solid var(--border);border-radius:12px;
+    padding:18px;text-align:center}
+  .result-card h3{color:var(--accent);font-size:.95rem;margin-bottom:8px}
+  .result-score{font-size:1.6rem;font-weight:700}
+  .result-pct{color:var(--muted);margin-top:4px}
+  .total-result{background:linear-gradient(90deg,#4c1d95,#312e81);border:1px solid var(--accent);
+    border-radius:14px;padding:22px;text-align:center;margin-bottom:26px}
+  .total-result h3{color:#fde68a}
+  .total-score{font-size:2.4rem;font-weight:800;color:#fff}
+  .total-pct{font-size:1.5rem;color:#fbbf24;font-weight:700;margin-top:4px}
+  .errors-list{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+  .error-item{background:#1a0f14;border:1px solid #4c1d24;border-left:4px solid var(--bad);
+    border-radius:10px;padding:14px}
+  .error-header{display:flex;justify-content:space-between;margin-bottom:8px}
+  .error-section{font-size:.8rem;color:var(--bad);font-weight:700;text-transform:uppercase}
+  .error-num{font-size:.85rem;color:var(--muted)}
+  .error-question{font-weight:600;margin-bottom:8px;line-height:1.5}
+  .error-answer{display:flex;flex-direction:column;gap:4px;font-size:.9rem}
+  .error-answer .given{color:#fca5a5}
+  .error-answer .correct{color:#86efac}
+  .no-errors{text-align:center;padding:30px;color:var(--ok);font-size:1.15rem;font-weight:600}
+
+  .cheat-card{text-align:center;border-color:var(--bad)}
+  .cheat-card h2{color:var(--bad);font-size:1.8rem;margin-bottom:18px}
+  .cheat-card p{color:var(--muted);line-height:1.7;margin-bottom:12px;font-size:1.05rem}
+  .cheat-card .btn{margin-top:18px}
+
+  @media(max-width:600px){
+    .card{padding:20px}
+    h1{font-size:1.5rem}
+    .question{font-size:1rem}
+    .timer{font-size:1rem;padding:6px 10px}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HOME -->
+  <div id="screen-home" class="screen active">
+    <div class="card">
+      <div class="badge">By N.T</div>
+      <span class="level-badge">NIVEAU OLYMPIADES</span>
+      <h1>Test d'Excellence RDC — Édition Renforcée</h1>
+      <p class="subtitle">Préparation intensive — 100 questions de très haut niveau</p>
+
+      <div class="presentation">
+        <h2>Présentation</h2>
+        <p>Cette édition renforcée est conçue pour les candidats visant l'excellence absolue. Les questions exigent rigueur logique, culture approfondie, maîtrise avancée du français et de l'anglais, et analyse mathématique de niveau supérieur.</p>
+        <ul>
+          <li><strong>Culture Générale</strong> — 25 questions (histoire, géopolitique, philosophie, économie)</li>
+          <li><strong>Français</strong> — 25 questions <em>(texte dense + grammaire avancée + rhétorique)</em></li>
+          <li><strong>Anglais</strong> — 25 questions <em>(texte philosophique + grammaire C1/C2)</em></li>
+          <li><strong>Mathématiques</strong> — 25 questions (analyse, logique, suites, combinatoire)</li>
+        </ul>
+        <p class="rules-title">Règles du test :</p>
+        <ul>
+          <li>⏱️ <strong>1 minute</strong> par question — chrono non interruptible.</li>
+          <li>📖 <strong>15 minutes</strong> de lecture par texte (français et anglais). Vous pouvez commencer avant la fin.</li>
+          <li>📖 Le texte reste accessible pendant les questions correspondantes.</li>
+          <li>🚫 <strong>Anti-triche strict :</strong> toute sortie de la page arrête immédiatement le test.</li>
+          <li>📊 Résultats détaillés (pourcentages + erreurs).</li>
+        </ul>
+      </div>
+
+      <p class="goodluck">🍀 Bonne chance de la part de <strong>Nathan</strong> !</p>
+
+      <button id="btn-start" class="btn primary" style="width:100%;padding:16px;font-size:1.1rem;">Commencer le test</button>
+    </div>
+  </div>
+
+  <!-- TEXT -->
+  <div id="screen-text" class="screen">
+    <div class="card">
+      <div class="text-header">
+        <h2 id="text-title">Lecture</h2>
+        <div class="timer" id="text-timer">15:00</div>
+      </div>
+      <div class="text-content" id="text-content"></div>
+      <div class="text-actions">
+        <button id="btn-start-questions" class="btn primary">Commencer les questions →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="quiz-header">
+        <div class="section-info">
+          <span class="section-badge" id="quiz-section">Culture Générale</span>
+          <span class="progress" id="quiz-progress">Question 1 / 25</span>
+        </div>
+        <div class="timer" id="question-timer">1:00</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="question" id="question-text"></div>
+      <div class="options" id="options-container"></div>
+      <div class="quiz-actions">
+        <button id="btn-view-text" class="btn secondary" style="display:none;">📖 Voir le texte</button>
+        <button id="btn-next" class="btn primary">Suivant →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="text-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title" style="margin:0;">Texte</h3>
+        <button id="btn-close-modal" class="btn-close">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="screen-results" class="screen">
+    <div class="card">
+      <h2>📊 Résultats — By N.T</h2>
+      <div id="results-summary"></div>
+      <div id="results-errors"></div>
+      <button id="btn-restart" class="btn primary" style="margin-top:24px;width:100%;">Recommencer le test</button>
+    </div>
+  </div>
+
+  <!-- CHEAT -->
+  <div id="screen-cheat" class="screen">
+    <div class="card cheat-card">
+      <h2>🚫 Tricherie détectée</h2>
+      <p>Vous avez quitté la page pendant le test.</p>
+      <p>Conformément aux règles, le test est immédiatement arrêté.</p>
+      <p><strong>Vous ne pouvez pas continuer ce test.</strong></p>
+      <button id="btn-cheat-home" class="btn danger" style="margin-top:18px;">Retour à l'accueil</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ===================== TEXTES ===================== */
+const FRENCH_TEXT = `
+<p>Il est un lieu commun, souvent invoqué avec une complaisance suspecte, selon lequel l'éducation serait la « clé du développement ». Formule commode, propre à dispenser ses auteurs de toute analyse rigoureuse. Car enfin, que signifie exactement cette métaphore ? Que l'éducation produit mécaniquement le développement, comme une clé ouvre une serrure ? La chose est loin d'être établie. L'histoire regorge de sociétés hautement lettrées demeurées économiquement stagnantes, et, à l'inverse, de nations grossièrement illettrées ayant connu des décollages fulgurants. La corrélation, si elle existe, est donc bien plus complexe qu'on ne le prétend.</p>
+
+<p>Ce qu'il faut interroger, c'est la nature même de l'éducation que l'on promeut. Une éducation purement technique, asservie aux besoins immédiats du marché, produit des exécutants dociles, non des citoyens. Une éducation purement humaniste, détachée des réalités matérielles, produit des esthètes impuissants, non des acteurs. Le véritable enjeu réside dans la tension féconde entre ces deux pôles, tension que l'on ne saurait résoudre par de simples ajustements curriculaires, mais qui exige une refonte philosophique de nos conceptions pédagogiques.</p>
+
+<p>Le drame de trop de systèmes éducatifs contemporains — et celui de la RDC n'y échappe point — est de sacrifier l'un à l'autre : tantôt en cédant au mirage de la professionnalisation à outrance, tantôt en se complaisant dans un académisme sclérosé. Or, l'excellence véritable — celle que l'on attend d'une jeunesse appelée à relever les défis colossaux de la reconstruction nationale — réside précisément dans la capacité à tenir ensemble ces exigences apparemment contradictoires. C'est là tout l'enjeu d'une formation qui prétend former non seulement des esprits compétents, mais des consciences éclairées.</p>
+
+<p>Aussi, faut-il se défier des solutions simplistes. Ni le tout-technique, ni le tout-littéraire, ni la fuite en avant dans le numérique, ni le retour nostalgique aux humanités classiques ne sauraient suffire. Ce qu'il nous faut, c'est une pensée dialectique de l'éducation, capable d'articuler savoir-faire et savoir-penser, efficacité et sens, performance et sagesse. Faute de quoi, nous continuerons de produire — au mieux — des rouages utiles, jamais des hommes libres.</p>
+`;
+
+const ENGLISH_TEXT = `
+<p>Few notions in modern philosophy are as contested as the concept of "progress." Inherited from the Enlightenment, the idea that history moves inexorably towards greater freedom, rationality, and material well-being has been subjected to relentless critique. The catastrophes of the twentieth century—two world wars, genocides, the specter of nuclear annihilation—seem to belie any naïve faith in humanity's moral ascent. Yet the critique of progress is itself not without its perils, for it can slip into a nostalgic reaction or a nihilistic quietism that paralyzes action as effectively as its opposite.</p>
+
+<p>What, then, might a defensible conception of progress look like? It cannot be simply cumulative: the mere accumulation of facts, technologies, or wealth guarantees nothing. Nor can it be purely moralistic, as though humanity were advancing along a predetermined arc of virtue. Rather, progress might be understood as the increasing capacity of a society to engage critically with its own contradictions—to recognize its failures, to revise its institutions, and to expand the circle of those whose voices are heard. On this view, progress is not a destination but a practice: the practice of collective self-examination.</p>
+
+<p>Such a conception has profound implications for education. If progress consists in the capacity for critical engagement, then education cannot be reduced to the transmission of established truths. It must cultivate the disposition to question, to doubt productively, and to imagine alternatives. This requires not only intellectual rigor but moral courage, for criticism of one's own society is rarely comfortable. It is here that the true test of an educational system lies: not in the obedience of its graduates, but in their willingness and ability to think against the grain when the grain has grown stale.</p>
+
+<p>Whether humanity is, in fact, progressing in this sense remains an open question. But the question itself is worth asking, and the asking is already a form of the practice it seeks to describe.</p>
+`;
+
+/* ===================== QUESTIONS ===================== */
+const QUESTIONS = [
+  /* ---------- CULTURE GÉNÉRALE (niveau avancé) ---------- */
+  {section:'culture',q:"Quelle conférence de 1945 a posé les bases de l'ordre mondial d'après-guerre, avec la création de l'ONU ?",options:["Yalta","Potsdam","San Francisco","Bretton Woods"],correct:2},
+  {section:'culture',q:"Le concept d'« État-nation » trouve son origine théorique la plus ancienne dans :",options:["La République de Platon","Le Prince de Machiavel","La Politique d'Aristote","Le Léviathan de Hobbes"],correct:1},
+  {section:'culture',q:"Quel philosophe africain a théorisé la « philosophie bantoue » dans les années 1940 ?",options:["Placide Tempels","Kwame Nkrumah","Cheikh Anta Diop","Léopold Sédar Senghor"],correct:0},
+  {section:'culture',q:"Le « Consensus de Washington » désigne :",options:["Un traité militaire","Un ensemble de politiques néolibérales","Un accord commercial africain","Une doctrine chinoise"],correct:1},
+  {section:'culture',q:"La bataille de Tondibi (1591) marque :",options:["La chute de l'empire du Ghana","La défaite de l'empire Songhaï face au Maroc","La fondation du royaume Kongo","L'indépendance de l'Éthiopie"],correct:1},
+  {section:'culture',q:"Quel événement de 1965 a inauguré le « second régime » de la RDC ?",options:["La sécession du Katanga","Le coup d'État de Mobutu","L'assassinat de Lumumba","La mutinerie de la Force Publique"],correct:1},
+  {section:'culture',q:"Le concept de « développement durable » a été formalisé pour la première fois dans :",options:["Le rapport Brundtland (1987)","La conférence de Rio (1992)","Le protocole de Kyoto (1997)","L'Agenda 21 (1992)"],correct:0},
+  {section:'culture',q:"Dans la tradition philosophique africaine, le concept d'« Ubuntu » désigne :",options:["L'indépendance politique","L'humanité partagée, « je suis parce que nous sommes »","La sagesse ancestrale transmise oralement","La solidarité tribale uniquement"],correct:1},
+  {section:'culture',q:"La conférence de Bandung (1955) a rassemblé :",options:["Les pays du tiers-monde non alignés","Les pays de l'OTAN","Les membres du Commonwealth","L'Union panafricaine"],correct:0},
+  {section:'culture',q:"La crise des missiles de Cuba (1962) s'inscrit dans :",options:["La Première Guerre mondiale","La guerre froide","La décolonisation africaine","La guerre du Vietnam"],correct:1},
+  {section:'culture',q:"Le « génocide de 1994 » au Rwanda a conduit à :",options:["La fin du régime de Habyarimana","La création du TPIR par l'ONU","L'intervention française Turquoise","Toutes les réponses ci-dessus"],correct:3},
+  {section:'culture',q:"La RDC détient environ quel pourcentage des réserves mondiales de cobalt ?",options:["30%","50%","70%","85%"],correct:2},
+  {section:'culture',q:"La théorie du « cœur de l'Afrique » et l'idée du « scandale géologique » ont été popularisées par :",options:["Jules Cornet","Pierre Lumumba","Mobutu Sese Seko","Cheikh Anta Diop"],correct:0},
+  {section:'culture',q:"Le « dialogue intercongolais » de Sun City (2002) a abouti à :",options:["La fin de la deuxième guerre du Congo et à un gouvernement de transition","L'indépendance du Katanga","La création du M23","La chute de Mobutu"],correct:0},
+  {section:'culture',q:"Quel économiste a théorisé la « destruction créatrice » ?",options:["Adam Smith","Karl Marx","Joseph Schumpeter","John Maynard Keynes"],correct:2},
+  {section:'culture',q:"La Commission de l'Union africaine a son siège à :",options:["Addis-Abeba","Johannesburg","Le Caire","Abuja"],correct:0},
+  {section:'culture',q:"Le concept de « soft power » a été forgé par :",options:["Henry Kissinger","Joseph Nye","Francis Fukuyama","Samuel Huntington"],correct:1},
+  {section:'culture',q:"Quelle agence de l'ONU est chargée de la protection des réfugiés ?",options:["UNICEF","PNUD","HCR","OCHA"],correct:2},
+  {section:'culture',q:"La « Françafrique » désigne :",options:["La zone franc CFA uniquement","L'ensemble des relations postcoloniales entre la France et ses anciennes colonies africaines","Un parti politique africain","Un accord commercial"],correct:1},
+  {section:'culture',q:"Quel écrivain africain a reçu le prix Nobel de littérature en 1986 ?",options:["Chinua Achebe","Wole Soyinka","Naguib Mahfouz","Toni Morrison"],correct:1},
+  {section:'culture',q:"Le « printemps arabe » a débuté en :",options:["2008","2010","2011","2013"],correct:1},
+  {section:'culture',q:"La théorie du « choc des civilisations » est critiquée notamment parce qu'elle :",options:["Ignore les dynamiques internes aux civilisations et essentialise les cultures","Nie l'existence des religions","Refuse l'idée de mondialisation","Défend le multiculturalisme"],correct:0},
+  {section:'culture',q:"Quel traité a institué l'Organisation mondiale du commerce (OMC) en 1995 ?",options:["Le traité de Marrakech","Le traité de Rome","L'accord de Bretton Woods","Le traité de Maastricht"],correct:0},
+  {section:'culture',q:"Le « Rapport Meadows » (1972) concluait que :",options:["La croissance économique est infinie","La croissance exponentielle est incompatible avec les limites planétaires","Le pétrole est inépuisable","Le climat est stable"],correct:1},
+  {section:'culture',q:"La « malédiction des ressources » (resource curse) désigne :",options:["Le paradoxe selon lequel les pays riches en ressources naturelles ont souvent une croissance faible et une gouvernance défaillante","Un phénomène climatique","Un mythe économique","Une théorie pétrolière uniquement"],correct:0},
+
+  /* ---------- FRANÇAIS (niveau avancé) ---------- */
+  {section:'francais',q:"Quelle est la figure de style dominante dans « cette métaphore » utilisée par l'auteur pour parler de l'éducation comme « clé du développement » ?",options:["Une comparaison filée","Une analogie fonctionnelle critiquée","Une personnification","Une métonymie"],correct:1},
+  {section:'francais',q:"Le mot « complaisance suspecte » employé par l'auteur exprime :",options:["Une admiration sincère","Un doute critique teinté de méfiance","Une neutralité descriptive","Une indifférence"],correct:1},
+  {section:'francais',q:"Dans « la corrélation, si elle existe, est bien plus complexe », le conditionnel « si elle existe » marque :",options:["Une hypothèse niée","Une concession prudente","Une certitude","Un futur"],correct:1},
+  {section:'francais',q:"Le mot « sclérosé » qualifie ici un académisme :",options:["Dynamique et novateur","Figé, sans renouvellement","Élitiste","Populaire"],correct:1},
+  {section:'francais',q:"Quelle est la fonction logique de la phrase « Or, l'excellence véritable... réside précisément dans la capacité à tenir ensemble ces exigences » ?",options:["Une concession","Une synthèse dialectique","Une réfutation","Une illustration"],correct:1},
+  {section:'francais',q:"L'expression « penser dialectiquement » implique :",options:["Penser de manière binaire","Penser en dépassant les oppositions par une synthèse","Penser de manière dogmatique","Penser uniquement l'absolu"],correct:1},
+  {section:'francais',q:"« Il nous faut » dans « Ce qu'il nous faut, c'est une pensée dialectique » est :",options:["Un présentatif à valeur d'insistance","Un futur proche","Un impératif déguisé","Une interrogation indirecte"],correct:0},
+  {section:'francais',q:"Le mot « rouages utiles » désigne métaphoriquement :",options:["Des intellectuels libres","Des exécutants fonctionnels mais non pensants","Des philosophes","Des artisans"],correct:1},
+  {section:'francais',q:"« Faute de quoi » est une locution :",options:["Conjonctive à valeur conditionnelle négative","Adverbiale de temps","Prépositive","Interjective"],correct:0},
+  {section:'francais',q:"Dans « une éducation purement technique », l'adverbe « purement » :",options:["Renforce la restriction en la présentant comme exclusive","Atténue le propos","Marque la manière uniquement","Exprime une concession"],correct:0},
+  {section:'francais',q:"Quelle figure de style trouve-t-on dans « le mirage de la professionnalisation » ?",options:["Métaphore","Métonymie","Synecdoque","Antiphrase"],correct:0},
+  {section:'francais',q:"Le registre dominant du texte est :",options:["Familier","Polémique et argumentatif soutenu","Lyrique","Épique"],correct:1},
+  {section:'francais',q:"« Tenir ensemble ces exigences apparemment contradictoires » signifie :",options:["Les annuler","Les concilier par un dépassement","Choisir l'une contre l'autre","Les ignorer"],correct:1},
+  {section:'francais',q:"Le mode et le temps de « Qu'il faille » (sous-entendu) serait :",options:["Indicatif présent","Subjonctif présent","Conditionnel présent","Impératif présent"],correct:1},
+  {section:'francais',q:"Dans « les défis colossaux de la reconstruction nationale », « colossaux » a une valeur :",options:["Hyperbolique","Litotique","Ironique","Atténuative"],correct:0},
+  {section:'francais',q:"La locution « aussi » en début de phrase (« Aussi, faut-il se défier... ») introduit :",options:["Une conséquence","Une opposition","Un exemple","Un but"],correct:0},
+  {section:'francais',q:"Dans « ni le tout-technique, ni le tout-littéraire », la construction est :",options:["Une négation corrélative","Une énumération","Une gradation","Une répétition"],correct:0},
+  {section:'francais',q:"Le mot « féconde » dans « tension féconde » exprime :",options:["Une stérilité","Une productivité positive","Une faiblesse","Une violence"],correct:1},
+  {section:'francais',q:"L'expression « fuite en avant » signifie :",options:["Une fuite prudente","Une aggravation par refus d'affronter le problème","Une retraite stratégique","Une avancée héroïque"],correct:1},
+  {section:'francais',q:"Quelle est la nature grammaticale de « faute de quoi » ?",options:["Conjonction de subordination","Locution conjonctive","Adverbe","Préposition"],correct:1},
+  {section:'francais',q:"Dans « il faut se défier », le verbe « se défier » signifie ici :",options:["Faire confiance","Se méfier","Défier quelqu'un","Encourager"],correct:1},
+  {section:'francais',q:"Le « nous » dans « nous continuerons de produire » a une valeur :",options:["Générique et collective (impliquant la société)","Individuelle (l'auteur seul)","Vouvoiement","Aucune"],correct:0},
+  {section:'francais',q:"Quelle figure consiste à dire « plus complexe qu'on ne le prétend » ?",options:["Litote","Emphase comparative","Antiphrase","Périphrase"],correct:1},
+  {section:'francais',q:"Le rythme ternaire « savoir-faire, savoir-penser, efficacité et sens » constitue :",options:["Une anaphore","Une énumération progressive à visée rhétorique","Une allitération","Une prétérition"],correct:1},
+  {section:'francais',q:"Dans l'expression « consciences éclairées », « éclairées » est un participe passé employé comme :",options:["Verbe","Adjectif qualificatif","Nom","Adverbe"],correct:1},
+
+  /* ---------- ANGLAIS (niveau avancé C1/C2) ---------- */
+  {section:'anglais',q:"What is the author's central thesis about progress?",options:["Progress is an illusion","Progress is cumulative technological advance","Progress is a practice of critical self-examination","Progress is predetermined"],correct:2},
+  {section:'anglais',q:"The phrase “relentless critique” implies:",options:["Mild criticism","Persistent and unyielding criticism","Friendly debate","Superficial analysis"],correct:1},
+  {section:'anglais',q:"What does the author mean by “nihilistic quietism”?",options:["A productive activism","A passive resignation rooted in meaninglessness","A religious doctrine","A political ideology"],correct:1},
+  {section:'anglais',q:"The word “belie” in “seem to belie any naïve faith” means:",options:["To confirm","To contradict or give a false impression of","To reinforce","To celebrate"],correct:1},
+  {section:'anglais',q:"“Predetermined arc of virtue” refers to:",options:["A random moral path","A supposedly fixed trajectory of moral progress","A circle of virtues","A literary device"],correct:1},
+  {section:'anglais',q:"The author's tone can best be described as:",options:["Dogmatic","Nuanced and skeptical yet constructive","Cynical and dismissive","Enthusiastic and uncritical"],correct:1},
+  {section:'anglais',q:"The word “disposition” in “cultivate the disposition to question” most nearly means:",options:["A tendency or inclination","A physical arrangement","A legal ruling","A financial asset"],correct:0},
+  {section:'anglais',q:"What does “think against the grain” mean?",options:["To think slowly","To think contrary to prevailing opinion","To think superficially","To think collectively"],correct:1},
+  {section:'anglais',q:"The author suggests that the “true test of an educational system” is:",options:["Its graduates' obedience","Its graduates' willingness to think critically","Its rankings","Its funding"],correct:1},
+  {section:'anglais',q:"The phrase “the asking is already a form of the practice” is:",options:["A tautology","A paradox with philosophical significance","An error","An irrelevance"],correct:1},
+  {section:'anglais',q:"Which sentence uses the subjunctive correctly?",options:["I insist that he comes immediately","I insist that he come immediately","I insist that he coming immediately","I insist that he came immediately"],correct:1},
+  {section:'anglais',q:"Identify the correct inversion: “Rarely _____ such a spectacle.”",options:["we have seen","have we seen","we saw","did we saw"],correct:1},
+  {section:'anglais',q:"The past perfect continuous of “to write” is:",options:["had written","had been writing","has been writing","was writing"],correct:1},
+  {section:'anglais',q:"Which word best completes: “He was _____ to admit his mistake.”",options:["loath","loathe","loth","loathsome"],correct:0},
+  {section:'anglais',q:"The phrase “to take umbrage” means:",options:["To take shelter","To take offense","To take courage","To take a photo"],correct:1},
+  {section:'anglais',q:"Choose the correct sentence:",options:["Neither of the students have finished","Neither of the students has finished","Neither of the students are finishing","Neither of the students finish"],correct:1},
+  {section:'anglais',q:"“Notwithstanding the evidence, he persisted.” “Notwithstanding” means:",options:["Because of","In spite of","In addition to","Instead of"],correct:1},
+  {section:'anglais',q:"The word “perspicacious” means:",options:["Dull","Having keen insight","Hesitant","Confused"],correct:1},
+  {section:'anglais',q:"Identify the logical fallacy: “You can't trust his argument on climate because he's not a scientist.”",options:["Straw man","Ad hominem","Slippery slope","Appeal to authority"],correct:1},
+  {section:'anglais',q:"Choose the correctly punctuated sentence:",options:["He said, \"I will come tomorrow\"","He said \"I will come tomorrow\"","He said, I will come tomorrow","He said: \"I will come tomorrow.\""],correct:0},
+  {section:'anglais',q:"“To beg the question” means:",options:["To ask politely","To assume what one is trying to prove","To avoid a question","To answer a question"],correct:1},
+  {section:'anglais',q:"Which sentence is in the future perfect?",options:["I will finish","I will have finished","I am finishing","I finished"],correct:1},
+  {section:'anglais',q:"The idiom “to draw a long bow” means:",options:["To shoot far","To exaggerate or make an unlikely claim","To be patient","To aim high"],correct:1},
+  {section:'anglais',q:"Which is a correct use of the unreal past?",options:["If I was you","If I were you","If I am you","If I be you"],correct:1},
+  {section:'anglais',q:"“Apropos of nothing, he mentioned the war.” The phrase “apropos of” means:",options:["In spite of","With regard to","Apart from","Instead of"],correct:1},
+
+  /* ---------- MATHÉMATIQUES (niveau olympiades) ---------- */
+  {section:'maths',q:"Quel est l'ensemble de définition de f(x) = ln(ln(x)) ?",options:["]0, +∞[","]1, +∞[","]-∞, +∞[","]0, 1["],correct:1},
+  {section:'maths',q:"Calculez lim(x→0⁺) x · ln(x).",options:["0","1","+∞","−∞"],correct:0},
+  {section:'maths',q:"La limite lim(x→+∞) (ln(x)) / x vaut :",options:["0","1","+∞","−∞"],correct:0},
+  {section:'maths',q:"Soit f(x) = (x² + 3x + 2) / (x + 1). Que vaut f(−1) après simplification ?",options:["Indéfini","1","−1","0"],correct:1},
+  {section:'maths',q:"Combien d'asymptotes (toutes catégories) possède f(x) = (x² + 1) / x ?",options:["1","2","3","4"],correct:1},
+  {section:'maths',q:"Étudiez la parité de f(x) = ln((1+x)/(1−x)).",options:["Paire","Impaire","Ni paire, ni impaire","Périodique"],correct:1},
+  {section:'maths',q:"Calculez lim(x→0) (e^x − 1 − x) / x².",options:["0","1/2","1","+∞"],correct:1},
+  {section:'maths',q:"La dérivée de f(x) = x^x (pour x > 0) est :",options:["x^x","x^x · ln(x)","x^x · (ln(x) + 1)","x · x^(x−1)"],correct:2},
+  {section:'maths',q:"La fonction f(x) = |x| / x pour x ≠ 0 est :",options:["Paire","Impaire","Constante","Ni paire, ni impaire"],correct:1},
+  {section:'maths',q:"Combien vaut lim(x→+∞) (√(x² + x) − √(x² − x)) ?",options:["0","1","2","+∞"],correct:1},
+  {section:'maths',q:"Un père et son fils ont ensemble 60 ans. Le père a 30 ans de plus que le fils. Quel est l'âge du père ?",options:["40","45","50","55"],correct:1},
+  {section:'maths',q:"Quel nombre complète la suite : 2 ; 3 ; 5 ; 8 ; 13 ; 21 ; ...",options:["30","34","35","42"],correct:1},
+  {section:'maths',q:"Suite de Collatz : 27 atteint 1 en combien d'étapes (étapes = nombre de transformations) ?",options:["110","111","112","113"],correct:1},
+  {section:'maths',q:"Trois boîtes : l'une contient deux boules blanches, l'autre deux noires, la troisième une blanche et une noire. Les étiquettes sont toutes fausses. Combien de tirages minimum pour identifier chaque boîte ?",options:["1","2","3","4"],correct:0},
+  {section:'maths',q:"Un libraire reçoit 5 clients. Chaque client achète un livre parmi 5 titres. Combien de combinaisons possibles ?",options:["25","125","625","3125"],correct:3},
+  {section:'maths',q:"Résolvez : log₃(x) + log₃(x + 6) = 3.",options:["x = 3","x = 6","x = 9","x = 12"],correct:0},
+  {section:'maths',q:"Quelle est la période de f(x) = tan(3x) ?",options:["π/3","π","3π","2π/3"],correct:0},
+  {section:'maths',q:"Si cos θ = −4/5 et θ est dans le deuxième quadrant, sin θ vaut :",options:["3/5","−3/5","4/5","−4/5"],correct:0},
+  {section:'maths',q:"Calculez la dérivée de f(x) = arctan(x).",options:["1/(1+x²)","1/(1−x²)","1/√(1−x²)","−1/(1+x²)"],correct:0},
+  {section:'maths',q:"Quelle est la somme des n premiers entiers impairs (1+3+5+...+2n−1) ?",options:["n(n+1)/2","n²","2n−1","n(n−1)/2"],correct:1},
+  {section:'maths',q:"Un triangle rectangle a une hypoténuse de 13 et un côté de 5. Quelle est son aire ?",options:["30","60","65","32.5"],correct:0},
+  {section:'maths',q:"On tire simultanément 3 cartes d'un jeu de 52. Quelle est la probabilité d'obtenir 3 rois ?",options:["4/C(52,3)","1/5525","1/22100","2/5525"],correct:0},
+  {section:'maths',q:"Dans une classe de 40 élèves, 25 aiment les maths, 20 aiment la physique, 10 aiment les deux. Combien n'aiment ni l'un ni l'autre ?",options:["5","10","15","20"],correct:0},
+  {section:'maths',q:"Le nombre 2¹⁰⁰ a combien de chiffres ? (log₁₀(2) ≈ 0,301)",options:["29","30","31","32"],correct:2},
+  {section:'maths',q:"Je pense à un nombre. Je lui ajoute 5. Je multiplie le résultat par 4. Je retranche 20. Je divise par 2. J'obtiens 30. Quel est le nombre de départ ?",options:["10","12","15","20"],correct:2}
+];
+
+/* ===================== SECTIONS ===================== */
+const SECTIONS = [
+  {id:'culture', name:'Culture Générale', text:null},
+  {id:'francais', name:'Français', text:FRENCH_TEXT},
+  {id:'anglais', name:'Anglais', text:ENGLISH_TEXT},
+  {id:'maths', name:'Mathématiques', text:null}
+];
+
+const ALL_QUESTIONS = [];
+SECTIONS.forEach((section, sIdx) => {
+  const list = QUESTIONS.filter(q => q.section === section.id);
+  list.forEach((q, qIdx) => {
+    ALL_QUESTIONS.push(Object.assign({}, q, {
+      sectionId: section.id,
+      sectionName: section.name,
+      sectionIndex: sIdx,
+      questionInSection: qIdx,
+      totalInSection: list.length,
+      globalIndex: ALL_QUESTIONS.length
+    }));
+  });
+});
+
+/* ===================== ÉTAT ===================== */
+const state = {
+  testActive:false,
+  cheated:false,
+  currentGlobalIdx:0,
+  answers:new Array(ALL_QUESTIONS.length).fill(null),
+  questionTimer:null,
+  questionTimeLeft:60,
+  textTimer:null,
+  textTimeLeft:900,
+  currentTextSection:0,
+  currentPhase:'home'
+};
+
+/* ===================== UTILITAIRES ===================== */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function formatTime(sec){
+  if (sec < 0) sec = 0;
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return m + ':' + String(s).padStart(2, '0');
+}
+function updateQuestionTimer(){
+  const el = document.getElementById('question-timer');
+  el.textContent = formatTime(state.questionTimeLeft);
+  el.classList.toggle('danger', state.questionTimeLeft <= 10);
+}
+function updateTextTimer(){
+  const el = document.getElementById('text-timer');
+  el.textContent = formatTime(state.textTimeLeft);
+  el.classList.toggle('danger', state.textTimeLeft <= 30);
+}
+
+/* ===================== FLUX ===================== */
+function startTest(){
+  state.testActive = true;
+  state.cheated = false;
+  state.currentGlobalIdx = 0;
+  state.answers = new Array(ALL_QUESTIONS.length).fill(null);
+  state.currentPhase = 'quiz';
+  activateAntiCheat();
+
+  const firstQ = ALL_QUESTIONS[0];
+  const section = SECTIONS[firstQ.sectionIndex];
+  if (section.text){
+    showTextScreen(firstQ.sectionIndex);
+  } else {
+    showQuizScreen();
+  }
+}
+
+function showTextScreen(sectionIdx){
+  state.currentPhase = 'text';
+  state.currentTextSection = sectionIdx;
+  const section = SECTIONS[sectionIdx];
+  document.getElementById('text-title').textContent = 'Lecture — ' + section.name;
+  document.getElementById('text-content').innerHTML = section.text;
+  showScreen('screen-text');
+
+  state.textTimeLeft = 15 * 60;
+  updateTextTimer();
+  if (state.textTimer) clearInterval(state.textTimer);
+  state.textTimer = setInterval(() => {
+    state.textTimeLeft--;
+    updateTextTimer();
+    if (state.textTimeLeft <= 0){
+      clearInterval(state.textTimer);
+      state.textTimer = null;
+      startSectionQuestions(state.currentTextSection);
+    }
+  }, 1000);
+}
+
+function startSectionQuestions(sectionIdx){
+  if (state.textTimer){ clearInterval(state.textTimer); state.textTimer = null; }
+  const idx = ALL_QUESTIONS.findIndex(q => q.sectionIndex === sectionIdx);
+  if (idx >= 0){
+    state.currentGlobalIdx = idx;
+    showQuizScreen();
+  } else {
+    finishTest();
+  }
+}
+
+function showQuizScreen(){
+  state.currentPhase = 'quiz';
+  showScreen('screen-quiz');
+  loadQuestion();
+}
+
+function loadQuestion(){
+  const q = ALL_QUESTIONS[state.currentGlobalIdx];
+  document.getElementById('quiz-section').textContent = q.sectionName;
+  document.getElementById('quiz-progress').textContent =
+    'Question ' + (q.questionInSection + 1) + ' / ' + q.totalInSection;
+  document.getElementById('question-text').textContent = q.q;
+
+  const progress = ((state.currentGlobalIdx + 1) / ALL_QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = progress + '%';
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = '<strong>' + String.fromCharCode(65 + i) + '.</strong> ' + opt;
+    btn.addEventListener('click', () => selectOption(i));
+    if (state.answers[state.currentGlobalIdx] === i) btn.classList.add('selected');
+    container.appendChild(btn);
+  });
+
+  const section = SECTIONS[q.sectionIndex];
+  const btnText = document.getElementById('btn-view-text');
+  if (section.text){
+    btnText.style.display = 'inline-block';
+    btnText.onclick = () => openTextModal(section);
+  } else {
+    btnText.style.display = 'none';
+  }
+
+  state.questionTimeLeft = 60;
+  updateQuestionTimer();
+  if (state.questionTimer) clearInterval(state.questionTimer);
+  state.questionTimer = setInterval(() => {
+    state.questionTimeLeft--;
+    updateQuestionTimer();
+    if (state.questionTimeLeft <= 0){
+      clearInterval(state.questionTimer);
+      state.questionTimer = null;
+      nextQuestion();
+    }
+  }, 1000);
+}
+
+function selectOption(i){
+  state.answers[state.currentGlobalIdx] = i;
+  document.querySelectorAll('.option').forEach((btn, idx) => {
+    btn.classList.toggle('selected', idx === i);
+  });
+}
+
+function nextQuestion(){
+  if (state.questionTimer){ clearInterval(state.questionTimer); state.questionTimer = null; }
+
+  const currentQ = ALL_QUESTIONS[state.currentGlobalIdx];
+  const nextIdx = state.currentGlobalIdx + 1;
+
+  if (nextIdx >= ALL_QUESTIONS.length){
+    finishTest();
+    return;
+  }
+
+  const nextQ = ALL_QUESTIONS[nextIdx];
+  state.currentGlobalIdx = nextIdx;
+
+  if (nextQ.sectionIndex !== currentQ.sectionIndex){
+    const nextSection = SECTIONS[nextQ.sectionIndex];
+    if (nextSection.text){
+      showTextScreen(nextQ.sectionIndex);
+      return;
+    }
+  }
+
+  loadQuestion();
+}
+
+/* ===================== MODAL ===================== */
+function openTextModal(section){
+  document.getElementById('modal-title').textContent = 'Texte — ' + section.name;
+  document.getElementById('modal-body').innerHTML = section.text;
+  document.getElementById('text-modal').classList.add('open');
+}
+function closeTextModal(){
+  document.getElementById('text-modal').classList.remove('open');
+}
+
+/* ===================== ANTI-TRICHE ===================== */
+let antiCheatBound = false;
+function activateAntiCheat(){
+  if (antiCheatBound) return;
+  antiCheatBound = true;
+
+  document.addEventListener('visibilitychange', () => {
+    if (state.testActive && !state.cheated && document.hidden){
+      triggerCheat();
+    }
+  });
+
+  window.addEventListener('blur', () => {
+    if (state.testActive && !state.cheated){
+      setTimeout(() => {
+        if (state.testActive && !state.cheated && !document.hasFocus()){
+          triggerCheat();
+        }
+      }, 200);
+    }
+  });
+}
+
+function triggerCheat(){
+  state.cheated = true;
+  state.testActive = false;
+  if (state.questionTimer){ clearInterval(state.questionTimer); state.questionTimer = null; }
+  if (state.textTimer){ clearInterval(state.textTimer); state.textTimer = null; }
+  closeTextModal();
+  showScreen('screen-cheat');
+}
+
+/* ===================== RÉSULTATS ===================== */
+function finishTest(){
+  state.testActive = false;
+  state.currentPhase = 'results';
+  if (state.questionTimer){ clearInterval(state.questionTimer); state.questionTimer = null; }
+  if (state.textTimer){ clearInterval(state.textTimer); state.textTimer = null; }
+  closeTextModal();
+
+  const sectionScores = {};
+  SECTIONS.forEach(s => { sectionScores[s.id] = {correct:0, total:0, name:s.name}; });
+
+  const errors = [];
+  ALL_QUESTIONS.forEach((q, i) => {
+    const answer = state.answers[i];
+    const isCorrect = answer === q.correct;
+    sectionScores[q.sectionId].total++;
+    if (isCorrect){
+      sectionScores[q.sectionId].correct++;
+    } else {
+      errors.push({question:q, given:answer});
+    }
+  });
+
+  let totalCorrect = 0;
+  const totalQuestions = ALL_QUESTIONS.length;
+
+  let summaryHtml = '<div class="results-grid">';
+  SECTIONS.forEach(s => {
+    const sc = sectionScores[s.id];
+    totalCorrect += sc.correct;
+    const pct = Math.round((sc.correct / sc.total) * 100);
+    summaryHtml +=
+      '<div class="result-card">' +
+        '<h3>' + sc.name + '</h3>' +
+        '<div class="result-score">' + sc.correct + '/' + sc.total + '</div>' +
+        '<div class="result-pct">' + pct + '%</div>' +
+      '</div>';
+  });
+  summaryHtml += '</div>';
+
+  const totalPct = Math.round((totalCorrect / totalQuestions) * 100);
+  summaryHtml +=
+    '<div class="total-result">' +
+      '<h3>Score Total</h3>' +
+      '<div class="total-score">' + totalCorrect + '/' + totalQuestions + '</div>' +
+      '<div class="total-pct">' + totalPct + '%</div>' +
+    '</div>';
+
+  document.getElementById('results-summary').innerHTML = summaryHtml;
+
+  let errorsHtml = '<h3>Détail des erreurs</h3>';
+  if (errors.length === 0){
+    errorsHtml += '<p class="no-errors">🎉 Aucune erreur ! Niveau exceptionnel !</p>';
+  } else {
+    errorsHtml += '<div class="errors-list">';
+    errors.forEach(e => {
+      const q = e.question;
+      const givenText = (e.given === null)
+        ? '<em>Non répondu (temps écoulé)</em>'
+        : String.fromCharCode(65 + e.given) + '. ' + q.options[e.given];
+      const correctText = String.fromCharCode(65 + q.correct) + '. ' + q.options[q.correct];
+      errorsHtml +=
+        '<div class="error-item">' +
+          '<div class="error-header">' +
+            '<span class="error-section">' + q.sectionName + '</span>' +
+            '<span class="error-num">Q' + (q.questionInSection + 1) + '</span>' +
+          '</div>' +
+          '<div class="error-question">' + q.q + '</div>' +
+          '<div class="error-answer">' +
+            '<span class="given">❌ Votre réponse : ' + givenText + '</span>' +
+            '<span class="correct">✅ Bonne réponse : ' + correctText + '</span>' +
+          '</div>' +
+        '</div>';
+    });
+    errorsHtml += '</div>';
+  }
+
+  document.getElementById('results-errors').innerHTML = errorsHtml;
+  showScreen('screen-results');
+}
+
+/* ===================== RESET ===================== */
+function resetToHome(){
+  state.testActive = false;
+  state.cheated = false;
+  state.currentGlobalIdx = 0;
+  state.answers = new Array(ALL_QUESTIONS.length).fill(null);
+  state.currentPhase = 'home';
+  if (state.questionTimer){ clearInterval(state.questionTimer); state.questionTimer = null; }
+  if (state.textTimer){ clearInterval(state.textTimer); state.textTimer = null; }
+  closeTextModal();
+  showScreen('screen-home');
+}
+
+/* ===================== ÉVÉNEMENTS ===================== */
+document.getElementById('btn-start').addEventListener('click', startTest);
+document.getElementById('btn-start-questions').addEventListener('click', () => {
+  startSectionQuestions(state.currentTextSection);
+});
+document.getElementById('btn-next').addEventListener('click', nextQuestion);
+document.getElementById('btn-close-modal').addEventListener('click', closeTextModal);
+document.getElementById('btn-restart').addEventListener('click', () => {
+  if (confirm('Recommencer le test depuis le début ?')) resetToHome();
+});
+document.getElementById('btn-cheat-home').addEventListener('click', resetToHome);
+document.getElementById('text-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'text-modal') closeTextModal();
+});
+</script>
+</body>
+  </html>
